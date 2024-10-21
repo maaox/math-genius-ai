@@ -85,9 +85,6 @@
 - **Control de Calidad:**
   - [Husky](https://typicode.github.io/husky) para Git Hooks
   - [lint-staged](https://github.com/okonet/lint-staged)
-- **Pruebas:**
-  - Jest
-  - Testing Library
 - **Gestor de Paquetes:**
   - [pnpm](https://pnpm.io/)
 
@@ -106,8 +103,8 @@
 1. **Clonar el Repositorio**
 
    ```bash
-   git clone https://github.com/MAAOX/MathGeniusAI.git
-   cd MathGeniusAI
+   git clone https://github.com/maaox/math-genius-ai.git
+   cd math-genius-ai
    ```
 
 2. **Instalar Dependencias**
@@ -121,7 +118,7 @@
    Crea un archivo \`.env.local\` en la raíz del proyecto y configura las variables necesarias.
 
    ```env
-   NEXT_PUBLIC_API_URL=https://api.mathgeniusai.com
+   NEXT_PUBLIC_API_AI_URL=https://api.mathgeniusai.com
    ```
 
 4. **Ejecutar la Aplicación en Desarrollo**
@@ -191,14 +188,12 @@ MathGeniusAI/
 │   └── motivational-challenges/
 ├── components/
 │   ├── common/
-│   ├── ui/
-│   └── layout/
+│   └── ui/
 ├── lib/
 │   ├── api/
 │   ├── utils/
 │   └── constants/
 ├── hooks/
-├── context/
 ├── styles/
 │   ├── globals.css
 │   ├── variables.css
@@ -209,10 +204,6 @@ MathGeniusAI/
 │   ├── images/
 │   ├── fonts/
 │   └── favicon.ico
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
 ├── .eslintrc.js
 ├── .prettierrc
 ├── next.config.js
@@ -223,13 +214,11 @@ MathGeniusAI/
 **Descripción:**
 
 - **app/**: Contiene las páginas y rutas principales de la aplicación.
-- **components/**: Componentes reutilizables organizados en \`common\`, \`ui\` y \`layout\`.
+- **components/**: Componentes reutilizables organizados en \`common\`, \`ui\`.
 - **lib/**: Lógica de negocio, llamadas a APIs, utilidades y constantes.
 - **hooks/**: Custom hooks de React.
-- **context/**: Contextos globales de React.
 - **styles/**: Archivos de estilos globales y específicos.
 - **public/**: Recursos estáticos como imágenes y fuentes.
-- **tests/**: Pruebas unitarias, de integración y end-to-end.
 
 ---
 
@@ -256,8 +245,6 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](./LICENS
 ## Contacto
 
 📧 **Email:** maaox.dev@gmail.com  
-🌐 **Sitio Web:** [www.mathgeniusai.com](https://www.mathgeniusai.com)  
-🐦 **Twitter:** [@MathGeniusAI](https://twitter.com/MathGeniusAI)
 
 ---
 
