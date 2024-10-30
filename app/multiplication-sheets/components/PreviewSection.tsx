@@ -5,21 +5,22 @@ import { useEffect, useState } from 'react'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { getTemplateById } from '@/lib/constans/templates'
+import { getTemplateById } from '@/lib/constants/templates'
 
 interface PreviewSectionProps {
   selectedTables: number[]
   selectedTemplate: string
+  generatedImages: string[]
   onImagesGenerated: (images: string[]) => void
 }
 
 export const PreviewSection: React.FC<PreviewSectionProps> = ({
   selectedTables,
   selectedTemplate,
+  generatedImages,
   onImagesGenerated,
 }) => {
   const [loading, setLoading] = useState(false)
-  const [generatedImages, setGeneratedImages] = useState<string[]>([])
 
   useEffect(() => {
     if (selectedTables.length > 0 && selectedTemplate) {
@@ -31,7 +32,6 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
   const generateImages = async () => {
     try {
       const images = await Promise.all(selectedTables.map((table) => generateImageForTable(table)))
-      setGeneratedImages(images)
       onImagesGenerated(images)
     } catch (error) {
       console.error(error)
@@ -40,66 +40,108 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
     }
   }
 
-  // Continuación de PreviewSection.tsx
-
   const generateImageForTable = async (number: number): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const template = getTemplateById(selectedTemplate)
-      if (!template) {
-        reject(new Error('Plantilla no encontrada'))
-        return
-      }
+    let image: string = ''
+    const template = getTemplateById(selectedTemplate)
 
-      const image = new Image()
-      image.crossOrigin = 'Anonymous'
-      image.src = template.image // Asegúrate de que las imágenes estén en la carpeta `public/images`
+    if (!template) {
+      throw new Error('Plantilla no encontrada')
+    }
 
-      image.onload = () => {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')!
-        canvas.width = image.width
-        canvas.height = image.height
+    const templateImage = new Image()
+    templateImage.crossOrigin = 'Anonymous'
+    templateImage.src = template.image // Asegúrate de que las imágenes estén en la carpeta `public/images`
 
-        // Dibujar la imagen de plantilla
-        ctx.drawImage(image, 0, 0)
+    const logoImage = new Image()
+    logoImage.crossOrigin = 'Anonymous'
+    logoImage.src = '/images/logo.png' // Ruta al logo
 
-        // Configurar estilo del texto
-        ctx.font = '65px Arial'
-        ctx.fillStyle = 'black'
-        ctx.textAlign = 'center'
+    try {
+      // Esperar a que ambas imágenes se carguen
+      await Promise.all([
+        new Promise((res, rej) => {
+          templateImage.onload = res
+          templateImage.onerror = rej
+        }),
+        new Promise((res, rej) => {
+          logoImage.onload = res
+          logoImage.onerror = rej
+        }),
+      ])
 
-        // Generar las multiplicaciones
-        const table = Array.from({ length: 12 }, (_, i) => `${number} x ${i + 1} = ${number * (i + 1)}`)
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+      canvas.width = templateImage.width
+      canvas.height = templateImage.height
 
-        // Dividir en dos columnas
-        const column1 = table.slice(0, 6)
-        const column2 = table.slice(6, 12)
+      // Dibujar la imagen de plantilla
+      ctx.drawImage(templateImage, 0, 0)
 
-        // Posiciones iniciales
-        const startX1 = canvas.width * 0.35
-        const startX2 = canvas.width * 0.65
-        const startY = canvas.height * 0.3
-        const lineHeight = 130
+      // Dibujar el logo centrado en la parte superior
+      const logoWidth = canvas.width * 0.15
+      const logoHeight = (logoImage.height / logoImage.width) * logoWidth
+      const logoX = (canvas.width - logoWidth) / 2
+      const logoY = 150 // Margen superior
+      ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight)
 
-        // Dibujar columna 1
-        column1.forEach((text, index) => {
-          ctx.fillText(text, startX1, startY + index * lineHeight)
-        })
+      // Dibujar el logo como marca de agua
+      ctx.globalAlpha = 0.1 // 90% de transparencia
+      const watermarkWidth = canvas.width * 0.5 // Ajustar tamaño si es necesario
+      const watermarkHeight = (logoImage.height / logoImage.width) * watermarkWidth
+      const watermarkX = (canvas.width - watermarkWidth) / 2
+      const watermarkY = (canvas.height - watermarkHeight) / 2
+      ctx.drawImage(logoImage, watermarkX, watermarkY, watermarkWidth, watermarkHeight)
+      ctx.globalAlpha = 1.0 // Restablecer opacidad
 
-        // Dibujar columna 2
-        column2.forEach((text, index) => {
-          ctx.fillText(text, startX2, startY + index * lineHeight)
-        })
+      // Configurar estilo del título
+      ctx.font = 'bold 72px Arial'
+      ctx.fillStyle = '#10528a'
+      ctx.textAlign = 'center'
 
-        // Obtener la imagen generada
-        const dataUrl = canvas.toDataURL('image/jpeg')
-        resolve(dataUrl)
-      }
+      // Posición del título
+      const titleX = canvas.width / 2
+      const titleY = logoY + logoHeight + 150 // Espacio debajo del logo
 
-      image.onerror = (error) => {
-        reject(error)
-      }
-    })
+      // Dibujar el título
+      ctx.fillText(`Tabla del ${number}`, titleX, titleY)
+
+      // Configurar estilo del texto para las multiplicaciones
+      ctx.font = 'bold 52px Verdana'
+      ctx.fillStyle = 'black'
+      ctx.textAlign = 'center'
+
+      // Generar las multiplicaciones
+      const table = Array.from({ length: 12 }, (_, i) => `${number} x ${i + 1} = ${number * (i + 1)}`)
+
+      // Dividir en dos columnas
+      const column1 = table.slice(0, 6)
+      const column2 = table.slice(6, 12)
+
+      const startX1 = canvas.width * 0.3
+      const startX2 = canvas.width * 0.7
+      const startY = titleY + 160 // canvas.height * 0.3
+      const lineHeight = 130
+
+      // Dibujar columna 1
+      column1.forEach((text, index) => {
+        const yPosition = startY + index * lineHeight
+        ctx.fillText(text, startX1, yPosition)
+      })
+
+      // Dibujar columna 2
+      column2.forEach((text, index) => {
+        const yPosition = startY + index * lineHeight
+        ctx.fillText(text, startX2, yPosition)
+      })
+
+      // Obtener la imagen generada
+      image = canvas.toDataURL('image/jpeg')
+    } catch (error) {
+      console.error('Error al cargar las imágenes o generar las imágenes:', error)
+      throw error
+    }
+
+    return image
   }
 
   return (
@@ -132,18 +174,6 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
               <p className="text-gray-500 ">Selecciona las tablas y una plantilla para ver la vista previa</p>
             </div>
           )}
-          {/* selectedTables.length > 0 && selectedTemplate ? (
-            <div>
-              <p className="mb-2 text-gray-700">Tablas seleccionadas: {selectedTables.join(', ')}</p>
-              <p className="mb-4 text-gray-700">Plantilla seleccionada: {selectedTemplate}</p>
-              // Aquí iría la lógica para generar la vista previa real
-              <div className="bg-gray-100 h-64 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
-                Vista previa de la ficha
-              </div>
-            </div>
-          ) : (
-            <p className="text-gray-500">Selecciona las tablas y una plantilla para ver la vista previa</p>
-          )  */}
         </CardContent>
       </Card>
     </div>

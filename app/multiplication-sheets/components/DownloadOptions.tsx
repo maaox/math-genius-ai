@@ -7,7 +7,7 @@ import JSZip from 'jszip'
 import { Download } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface DownloadOptionsProps {
   generatedImages: string[]
@@ -50,13 +50,16 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
   }
 
   const downloadAsPDF = () => {
-    const pdf = new jsPDF()
+    const pdf = new jsPDF('portrait', 'pt', 'a4')
+
+    const pageWidth = pdf.internal.pageSize.getWidth() - 50
+    const pageHeight = pdf.internal.pageSize.getHeight() - 50
 
     generatedImages.forEach((imgData, index) => {
       if (index > 0) {
         pdf.addPage()
       }
-      pdf.addImage(imgData, 'JPEG', 10, 10, 190, 277)
+      pdf.addImage(imgData, 'JPEG', 25, 25, pageWidth, pageHeight)
     })
 
     pdf.save('tablas_multiplicar.pdf')
@@ -71,8 +74,8 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
           new ImageRun({
             data: imageBuffer,
             transformation: {
-              width: 600,
-              height: 800,
+              width: 595,
+              height: 842,
             },
             type: 'jpg',
           }),
@@ -83,7 +86,15 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
     const doc = new Document({
       sections: [
         {
-          properties: {},
+          properties: {
+            page: {
+              size: {
+                orientation: 'portrait',
+                width: 11906, // 210mm en twips
+                height: 16838, // 297mm en twips
+              },
+            },
+          },
           children: imageParagraphs,
         },
       ],
@@ -105,9 +116,11 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
   }
 
   return (
-    <Card className="bg-white p-6 rounded-lg shadow-md">
-      <CardTitle className="text-2xl font-semibold mb-4 text-blue-600">Opciones de descarga</CardTitle>
-      <div className="flex flex-wrap gap-4">
+    <Card className="bg-white rounded-lg shadow-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-blue-600">Opciones de descarga</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-wrap gap-4">
         <Button onClick={() => downloadFile('WORD')} className="flex items-center bg-blue-500 hover:bg-blue-600">
           <Download className="mr-2 h-4 w-4" /> WORD
         </Button>
@@ -117,7 +130,7 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
         <Button onClick={() => downloadFile('JPG')} className="flex items-center bg-green-500 hover:bg-green-600">
           <Download className="mr-2 h-4 w-4" /> JPG
         </Button>
-      </div>
+      </CardContent>
     </Card>
   )
 }

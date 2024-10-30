@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { MultiplicationTableSelector } from '@/app/multiplication-sheets/components/MultiplicationTableSelector'
-import { TemplateGallery } from '@/app/multiplication-sheets/components/TemplateGallery'
-import { PreviewSection } from '@/app/multiplication-sheets/components/PreviewSection'
+
 import { DownloadOptions } from '@/app/multiplication-sheets/components/DownloadOptions'
+import { MultiplicationTableSelector } from '@/app/multiplication-sheets/components/MultiplicationTableSelector'
+import { PreviewSection } from '@/app/multiplication-sheets/components/PreviewSection'
+import { TemplateGallery } from '@/app/multiplication-sheets/components/TemplateGallery'
 
 export default function MultiplicatiosSheets() {
   const [selectedTables, setSelectedTables] = useState<number[]>([])
@@ -21,6 +22,7 @@ export default function MultiplicatiosSheets() {
       <PreviewSection
         selectedTables={selectedTables}
         selectedTemplate={selectedTemplate}
+        generatedImages={generatedImages}
         onImagesGenerated={setGeneratedImages}
       />
       <DownloadOptions generatedImages={generatedImages} />
