@@ -7,8 +7,8 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Generador de Fichas de Multiplicación',
-  description: 'Plataforma educativa para generar fichas de multiplicación personalizadas',
+  title: 'Math Genius IA',
+  description: 'Plataforma educativa para generar recursos personalizados de matemática',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
