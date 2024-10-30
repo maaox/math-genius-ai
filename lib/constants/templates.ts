@@ -25,6 +25,21 @@ export const templates = {
       name: 'Minimalista 5',
       image: '/images/minimalista5.jpg',
     },
+    {
+      id: 'minimalista6',
+      name: 'Minimalista 6',
+      image: '/images/minimalista6.jpg',
+    },
+    {
+      id: 'minimalista7',
+      name: 'Minimalista 7',
+      image: '/images/minimalista7.jpg',
+    },
+    {
+      id: 'minimalista8',
+      name: 'Minimalista 8',
+      image: '/images/minimalista8.jpg',
+    },
   ],
   infantil: [
     {
@@ -51,6 +66,41 @@ export const templates = {
       id: 'infantil5',
       name: 'Infantil 5',
       image: 'images/infantil5.jpg',
+    },
+    {
+      id: 'infantil6',
+      name: 'Infantil 6',
+      image: 'images/infantil6.jpg',
+    },
+    {
+      id: 'infantil7',
+      name: 'Infantil 7',
+      image: 'images/infantil7.jpg',
+    },
+    {
+      id: 'infantil8',
+      name: 'Infantil 8',
+      image: 'images/infantil8.jpg',
+    },
+    {
+      id: 'infantil9',
+      name: 'Infantil 9',
+      image: 'images/infantil9.jpg',
+    },
+    {
+      id: 'infantil10',
+      name: 'Infantil 10',
+      image: 'images/infantil10.jpg',
+    },
+    {
+      id: 'infantil11',
+      name: 'Infantil 11',
+      image: 'images/infantil11.jpg',
+    },
+    {
+      id: 'infantil12',
+      name: 'Infantil 12',
+      image: 'images/infantil12.jpg',
     },
   ],
 }
