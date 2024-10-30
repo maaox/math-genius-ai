@@ -118,7 +118,7 @@
    Crea un archivo \`.env.local\` en la raíz del proyecto y configura las variables necesarias.
 
    ```env
-   NEXT_PUBLIC_API_AI_URL=https://api.mathgeniusai.com
+   API_AI_URL=https://api.mathgeniusai.com
    ```
 
 4. **Ejecutar la Aplicación en Desarrollo**
