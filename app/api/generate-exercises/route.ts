@@ -1,0 +1,263 @@
+import { Groq } from 'groq-sdk'
+import { NextRequest, NextResponse } from 'next/server'
+
+import { Exercise } from '@/lib/interfaces/exercise'
+
+const groq = new Groq({ apiKey: process.env.API_AI_URL })
+
+interface RequestBody {
+  topic: string
+  quantity: string
+  difficulty: string[]
+}
+
+interface ResponseIA {
+  exercises: Exercise[]
+}
+
+export async function GET() {
+  return NextResponse.json({ hello: 'Hola, funciona correctamente' })
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body: RequestBody = await request.json()
+    const { topic, quantity, difficulty } = body
+
+    if (!topic || !quantity || !difficulty || !difficulty.length) {
+      return NextResponse.json({ error: 'Faltan parámetros requeridos' }, { status: 400 })
+    }
+
+    const exercises = await generateExercises(topic, Number(quantity), difficulty)
+    /* {
+      exercises: [
+        { question: 'Simplifica la expresión algebraica: 2x + 5 + 3x' },
+        { question: 'Resuelve la ecuación: x - 3 = 7' },
+        {
+          question:
+            'Satisfacer la ecuación: 2x + 2 = 10, ¿cuál es el valor de x? Y vamos a comprobar con un texto muy muy grande a ver cómo se comporta',
+        },
+        { question: 'Simplifica la expresión algebraica: 4x^2 - 2x - 3' },
+        { question: 'Resuelve la ecuación: x + 2 = 9' },
+        {
+          question: 'Satisfacer la ecuación: x/2 + 3 = 5, ¿cuál es el valor de x?',
+        },
+      ],
+    } */
+
+    return NextResponse.json({ exercises })
+  } catch (error) {
+    console.error('Error al generar ejercicios:', error)
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
+  }
+}
+
+function distributeExercises(totalExercises: number, difficultyLevels: number): number[] {
+  const baseExercisesPerLevel = Math.floor(totalExercises / difficultyLevels)
+  const remainingExercises = totalExercises % difficultyLevels
+
+  const exercisesPerLevel = Array(difficultyLevels).fill(baseExercisesPerLevel)
+  for (let i = 0; i < remainingExercises; i++) {
+    exercisesPerLevel[i]++
+  }
+
+  return exercisesPerLevel
+}
+
+async function generateExercises(topic: string, quantity: number, difficulties: string[]): Promise<Exercise[]> {
+  const exercisesPerLevel = distributeExercises(quantity, difficulties.length)
+  let response: ResponseIA = { exercises: [] }
+
+  for (let i = 0; i < difficulties.length; i++) {
+    const level = difficulties[i]
+    const numExercises = exercisesPerLevel[i]
+
+    // Construir el prompt y mensaje para el systema, esl asistente y usuaio
+    const systemPrompt =
+      'Eres un generador de contenido educativo que crea ejercicios en español sobre un tema y nivel de dificultad específicos.'
+
+    const userPrompt = `
+    Genera ${numExercises} ejercicios en español sobre el tema "${topic}" con un nivel de dificultad "${level}".
+    Cada ejercicio debe incluir una pregunta clara y concisa.
+    Devuelve únicamente un array JSON de ejercicios, donde cada objeto tiene una propiedad "question" con la pregunta.
+    Ejemplo:
+    [
+      { "question": "¿Cuál es la capital de España?" },
+      { "question": "Explica el proceso de la fotosíntesis." }
+    ]
+    `.trim()
+
+    // Realizar la llamada a la API de Groq
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      model: 'llama3-8b-8192',
+      temperature: 0.7,
+      max_tokens: 1024,
+      top_p: 1,
+      stream: false,
+      response_format: { type: 'json_object' },
+      stop: null,
+    })
+
+    // Obtener el contenido de la respuesta
+    const content = chatCompletion.choices[0]?.message?.content
+
+    if (!content) {
+      throw new Error('La respuesta de la IA está vacía.')
+    }
+
+    // Parsear el JSON de la respuesta
+    let levelExercises: ResponseIA
+    try {
+      levelExercises = JSON.parse(content)
+
+      // Validar que se generó el número exacto de ejercicios
+      if (levelExercises.exercises.length !== numExercises) {
+        console.error(
+          `Se esperaban ${numExercises} ejercicios de nivel "${level}", pero se recibieron ${levelExercises.exercises.length}.`,
+        )
+        throw new Error(`La IA no generó la cantidad correcta de ejercicios para el nivel "${level}".`)
+      }
+
+      response = { exercises: response.exercises.concat(levelExercises.exercises) }
+    } catch (error) {
+      console.error('Error al parsear el JSON:', error)
+      throw new Error('Error al parsear la respuesta de la IA.')
+    }
+  }
+
+  return response.exercises
+}
+
+/* async function fetchExercises(topic, quantity, difficulty) {
+  const response = await fetch('/api/generate-exercises', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ topic, quantity, difficulty }),
+  })
+
+  if (!response.ok) {
+    // Manejar errores
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Error al obtener los ejercicios')
+  }
+
+  const data = await response.json()
+  return data.exercises
+} */
+
+/**
+ * Este es otro modo
+ */
+
+// /app/api/generateExercises/route.ts
+
+/* interface Exercise {
+  question: string
+  answer: string
+}
+
+interface RequestBody {
+  topic: string
+  quantity: string
+  difficulty: string
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Extraer parámetros de la solicitud
+    const body: RequestBody = await request.json()
+    const { topic, quantity, difficulty } = body
+
+    // Validar parámetros
+    if (!topic || !quantity || !difficulty) {
+      return NextResponse.json({ error: 'Faltan parámetros requeridos' }, { status: 400 })
+    }
+
+    const quantityInt = parseInt(quantity, 10)
+
+    if (isNaN(quantityInt) || quantityInt <= 0 || quantityInt > 20) {
+      return NextResponse.json({ error: 'El parámetro quantity es inválido' }, { status: 400 })
+    }
+
+    // Configurar el cliente de Groq
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+
+    // Definir el esquema JSON esperado
+    const schema = {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          question: { type: 'string' },
+          answer: { type: 'string' },
+        },
+        required: ['question', 'answer'],
+      },
+    }
+
+    const jsonSchema = JSON.stringify(schema, null, 4)
+
+    // Construir el prompt del sistema
+    const systemPrompt = `Eres un asistente que genera ejercicios en formato JSON. El objeto JSON debe seguir el siguiente esquema: ${jsonSchema}`
+
+    // Construir el mensaje del usuario
+    const userMessage = `Por favor, genera ${quantityInt} ejercicios sobre el tema "${topic}" con un nivel de dificultad "${difficulty}". Cada ejercicio debe incluir una "question" y una "answer".`
+
+    // Hacer la llamada a la API de Groq
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: systemPrompt,
+        },
+        {
+          role: 'user',
+          content: userMessage,
+        },
+      ],
+      model: 'llama3-8b-8192',
+      temperature: 0,
+      response_format: { type: 'json_object' },
+    })
+
+    // Obtener y parsear la respuesta
+    const content = chatCompletion.choices[0]?.message?.content || ''
+    const exercises: Exercise[] = JSON.parse(content)
+
+    // Devolver la respuesta en formato JSON
+    return NextResponse.json({ exercises })
+  } catch (error: any) {
+    console.error('Error:', error)
+
+    if (error.response && error.response.status === 400) {
+      // Manejar errores de la API
+      return NextResponse.json({ error: error.response.data }, { status: 400 })
+    } else {
+      // Manejar otros errores
+      return NextResponse.json({ error: 'Ha ocurrido un error' }, { status: 500 })
+    }
+  }
+} */
+
+/* fetch('/api/generateExercises', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    topic: 'Álgebra',
+    quantity: '5',
+    difficulty: 'Intermedio',
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    const exercises: Exercise[] = data.exercises
+    console.log(exercises)
+  }) */
