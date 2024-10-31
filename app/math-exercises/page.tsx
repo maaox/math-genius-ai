@@ -9,7 +9,7 @@ import { TemplateGallery } from '@/app/math-exercises/components/TemplateGallery
 
 export default function MultiplicatiosSheets() {
   const [enteredTopic, setEnteredTopic] = useState('')
-  const [selectedQuantity, setSelectedQuantity] = useState('6')
+  const [selectedQuantity, setSelectedQuantity] = useState('3')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
@@ -36,7 +36,7 @@ export default function MultiplicatiosSheets() {
         generatedImages={generatedImages}
         onImagesGenerated={setGeneratedImages}
       />
-      <DownloadOptions generatedImages={generatedImages} />
+      <DownloadOptions enteredTopic={enteredTopic} generatedImages={generatedImages} />
     </div>
   )
 }

@@ -56,7 +56,7 @@ export const ExercisesConfiguration: React.FC<ExercisesConfigurationProps> = ({
             type="number"
             value={selectedQuantity}
             onChange={(e) => onSelectedQuantity(e.target.value)}
-            min="1"
+            min="3"
             max="40"
           />
         </div>

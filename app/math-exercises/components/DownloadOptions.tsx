@@ -10,10 +10,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface DownloadOptionsProps {
+  enteredTopic: string
   generatedImages: string[]
 }
 
-export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImages }) => {
+export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ enteredTopic, generatedImages }) => {
+  const topic = enteredTopic.replace(' ', '_')
+
   const downloadFile = (format: string) => {
     if (generatedImages.length === 0) {
       alert('No hay imágenes generadas para descargar.')
@@ -34,17 +37,17 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
       // Descargar imagen única
       const link = document.createElement('a')
       link.href = generatedImages[0]
-      link.download = 'ejercicios_matemáticos.jpg'
+      link.download = `ejercicios-${topic}.jpg`
       link.click()
     } else {
       // Crear un zip con las imágenes
       const zip = new JSZip()
       generatedImages.forEach((imgData, index) => {
         const base64Data = imgData.split(',')[1]
-        zip.file(`ejercicios_matemáticos_${index + 1}.jpg`, base64Data, { base64: true })
+        zip.file(`ejercicios_${index + 1}.jpg`, base64Data, { base64: true })
       })
       zip.generateAsync({ type: 'blob' }).then((content) => {
-        saveAs(content, 'ejercicios_matemáticos.zip')
+        saveAs(content, `ejercicios-${topic}.zip`)
       })
     }
   }
@@ -59,7 +62,7 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
       pdf.addImage(imgData, 'JPEG', 10, 10, 190, 277)
     })
 
-    pdf.save('ejercicios_matemáticos.pdf')
+    pdf.save(`ejercicios-${topic}.pdf`)
   }
 
   const downloadAsWord = async () => {
@@ -90,7 +93,7 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({ generatedImage
     })
 
     const blob = await Packer.toBlob(doc)
-    saveAs(blob, 'ejercicios_matemáticos.docx')
+    saveAs(blob, `ejercicios-${topic}.docx`)
   }
 
   const dataURLToArrayBuffer = (dataURL: string): ArrayBuffer => {
