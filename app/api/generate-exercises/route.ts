@@ -1,15 +1,9 @@
 import { Groq } from 'groq-sdk'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Exercise } from '@/lib/interfaces/exercise'
+import { Exercise, RequestBody } from '@/lib/interfaces'
 
-const groq = new Groq({ apiKey: process.env.API_AI_URL })
-
-interface RequestBody {
-  topic: string
-  quantity: string
-  difficulty: string[]
-}
+const groq = new Groq({ apiKey: process.env.API_AI_KEY })
 
 interface ResponseIA {
   exercises: Exercise[]
@@ -103,7 +97,7 @@ async function generateExercises(topic: string, quantity: number, difficulties: 
     })
 
     // Obtener el contenido de la respuesta
-    const content = chatCompletion.choices[0]?.message?.content
+    const content = chatCompletion.choices[0]?.message?.content?.trim()
 
     if (!content) {
       throw new Error('La respuesta de la IA está vacía.')
@@ -131,133 +125,3 @@ async function generateExercises(topic: string, quantity: number, difficulties: 
 
   return response.exercises
 }
-
-/* async function fetchExercises(topic, quantity, difficulty) {
-  const response = await fetch('/api/generate-exercises', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ topic, quantity, difficulty }),
-  })
-
-  if (!response.ok) {
-    // Manejar errores
-    const errorData = await response.json()
-    throw new Error(errorData.error || 'Error al obtener los ejercicios')
-  }
-
-  const data = await response.json()
-  return data.exercises
-} */
-
-/**
- * Este es otro modo
- */
-
-// /app/api/generateExercises/route.ts
-
-/* interface Exercise {
-  question: string
-  answer: string
-}
-
-interface RequestBody {
-  topic: string
-  quantity: string
-  difficulty: string
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    // Extraer parámetros de la solicitud
-    const body: RequestBody = await request.json()
-    const { topic, quantity, difficulty } = body
-
-    // Validar parámetros
-    if (!topic || !quantity || !difficulty) {
-      return NextResponse.json({ error: 'Faltan parámetros requeridos' }, { status: 400 })
-    }
-
-    const quantityInt = parseInt(quantity, 10)
-
-    if (isNaN(quantityInt) || quantityInt <= 0 || quantityInt > 20) {
-      return NextResponse.json({ error: 'El parámetro quantity es inválido' }, { status: 400 })
-    }
-
-    // Configurar el cliente de Groq
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
-
-    // Definir el esquema JSON esperado
-    const schema = {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          question: { type: 'string' },
-          answer: { type: 'string' },
-        },
-        required: ['question', 'answer'],
-      },
-    }
-
-    const jsonSchema = JSON.stringify(schema, null, 4)
-
-    // Construir el prompt del sistema
-    const systemPrompt = `Eres un asistente que genera ejercicios en formato JSON. El objeto JSON debe seguir el siguiente esquema: ${jsonSchema}`
-
-    // Construir el mensaje del usuario
-    const userMessage = `Por favor, genera ${quantityInt} ejercicios sobre el tema "${topic}" con un nivel de dificultad "${difficulty}". Cada ejercicio debe incluir una "question" y una "answer".`
-
-    // Hacer la llamada a la API de Groq
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        {
-          role: 'user',
-          content: userMessage,
-        },
-      ],
-      model: 'llama3-8b-8192',
-      temperature: 0,
-      response_format: { type: 'json_object' },
-    })
-
-    // Obtener y parsear la respuesta
-    const content = chatCompletion.choices[0]?.message?.content || ''
-    const exercises: Exercise[] = JSON.parse(content)
-
-    // Devolver la respuesta en formato JSON
-    return NextResponse.json({ exercises })
-  } catch (error: any) {
-    console.error('Error:', error)
-
-    if (error.response && error.response.status === 400) {
-      // Manejar errores de la API
-      return NextResponse.json({ error: error.response.data }, { status: 400 })
-    } else {
-      // Manejar otros errores
-      return NextResponse.json({ error: 'Ha ocurrido un error' }, { status: 500 })
-    }
-  }
-} */
-
-/* fetch('/api/generateExercises', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    topic: 'Álgebra',
-    quantity: '5',
-    difficulty: 'Intermedio',
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const exercises: Exercise[] = data.exercises
-    console.log(exercises)
-  }) */
