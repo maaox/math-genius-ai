@@ -1,7 +1,7 @@
 import { Groq } from 'groq-sdk'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Combination, Exercise, RequestBody } from '@/lib/interfaces'
+import { Exercise, RequestBody } from '@/lib/interfaces'
 
 const groq = new Groq({ apiKey: process.env.API_AI_KEY })
 
@@ -31,105 +31,52 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function generateCombinations(difficulties: string[], typeQuestions: string[]): Combination[] {
-  const combinations: Combination[] = []
-  for (const difficulty of difficulties) {
-    for (const typeQuestion of typeQuestions) {
-      combinations.push({ difficulty, typeQuestion })
-    }
-  }
-  return combinations
-}
+function distributeExercises(totalExercises: number, totalGroups: number): number[] {
+  const baseExercisesPerGroup = Math.floor(totalExercises / totalGroups)
+  const remainingExercises = totalExercises % totalGroups
 
-function distributeExercises(
-  totalExercises: number,
-  combinations: Combination[],
-): { combination: Combination; exercisesCount: number }[] {
-  const distributions: { combination: Combination; exercisesCount: number }[] = []
-
-  // Si el número de ejercicios es mayor o igual al número de combinaciones
-  if (totalExercises >= combinations.length) {
-    const baseExercisesPerCombination = Math.floor(totalExercises / combinations.length)
-    const remainingExercises = totalExercises % combinations.length
-
-    // Asignar el número base de ejercicios a todas las combinaciones
-    for (const combination of combinations) {
-      distributions.push({
-        combination,
-        exercisesCount: baseExercisesPerCombination,
-      })
-    }
-
-    // Distribuir los ejercicios restantes
-    for (let i = 0; i < remainingExercises; i++) {
-      distributions[i].exercisesCount += 1
-    }
-  } else {
-    // Si el número de ejercicios es menor que el número de combinaciones
-    // Seleccionar aleatoriamente combinaciones hasta cubrir el total de ejercicios
-    const shuffledCombinations = combinations.sort(() => Math.random() - 0.5)
-    for (let i = 0; i < totalExercises; i++) {
-      distributions.push({
-        combination: shuffledCombinations[i],
-        exercisesCount: 1,
-      })
-    }
-    // Asegurar que no hay combinaciones con cero ejercicios
+  const exercisesPerGroup = Array(totalGroups).fill(baseExercisesPerGroup)
+  for (let i = 0; i < remainingExercises; i++) {
+    exercisesPerGroup[i]++
   }
 
-  return distributions
+  return exercisesPerGroup
 }
 
-function getPromptForTypeQuestion(typeQuestion: string): {
+function getPromptInstructionsAndExample(typeQuestions: string[]): {
   instructions: string
   example: string
 } {
-  switch (typeQuestion) {
-    case 'eleccion multiple':
-      return {
-        instructions:
-          'Cada ejercicio debe ser una pregunta de elección múltiple con 4 opciones y la respuesta correcta indicada.',
-        example: `exercises: [
-        {
-            "question": "¿Cuál es la capital de Francia?",
-            "options": ["Madrid", "Berlín", "París", "Roma"],
-            "answer": "París"
-        }
-        ]`,
-      }
-    case 'rellenar espacios':
-      return {
-        instructions: 'Cada ejercicio debe ser una oración con espacios en blanco para completar.',
-        example: `exercises: [
-        {
-            "question": "La capital de España es _____.",
-            "answer": "Madrid"
-        }
-        ]`,
-      }
-    case 'respuesta corta':
-      return {
-        instructions: 'Cada ejercicio debe ser una pregunta que requiera una respuesta corta.',
-        example: `exercises: [
-        {
-            "question": "¿En qué año llegó Colón a América?",
-            "answer": "1492"
-        }
-        ]`,
-      }
-    case 'problemas':
-      return {
-        instructions: 'Cada ejercicio debe ser un problema que requiera una solución detallada.',
-        example: `exercises: [
-        {
-            "question": "Si Juan tiene 3 manzanas y compra 2 más, ¿cuántas manzanas tiene en total?",
-            "answer": "Juan tiene 5 manzanas en total."
-        }
-        ]`,
-      }
-    default:
-      return { instructions: '', example: '' }
+  const instructionsList: string[] = []
+  const examplesList: string[] = []
+
+  if (typeQuestions.includes('respuesta corta')) {
+    instructionsList.push('- Preguntas de respuesta corta que requieren una respuesta concisa.')
+    examplesList.push(
+      `{
+        "typeQuestion": "Respuesta corta",
+        "question": "¿En qué año ocurrió la Revolución Francesa?",
+        "answer": "1789"
+      }`,
+    )
   }
+
+  if (typeQuestions.includes('problemas')) {
+    instructionsList.push('- Problemas que requieren una solución detallada.')
+    examplesList.push(
+      `{
+        "typeQuestion": "Problemas",
+        "question": "Si María tiene 5 manzanas y regala 2, ¿cuántas le quedan?",
+        "answer": "Le quedan 3 manzanas."
+      }`,
+    )
+  }
+
+  const instructions = `Genera ejercicios de los siguientes tipos:\n${instructionsList.join('\n')}`
+
+  const example = `exercises: [\n${examplesList.join(',\n')}\n]`
+
+  return { instructions, example }
 }
 
 async function generateExercises(
@@ -138,84 +85,92 @@ async function generateExercises(
   difficulties: string[],
   typeQuestions: string[],
 ): Promise<Exercise[]> {
-  // Generar combinaciones de dificultad y tipo de pregunta
-  const combinations = generateCombinations(difficulties, typeQuestions)
-
-  // Distribuir ejercicios entre las combinaciones
-  const distributions = distributeExercises(quantity, combinations)
-
   let response: ResponseIA = { exercises: [] }
 
-  for (const { combination, exercisesCount } of distributions) {
-    const { difficulty, typeQuestion } = combination
+  // Agrupar por dificultad y tipo de pregunta
+  const groups = difficulties.map((difficulty) => ({
+    difficulty,
+    typeQuestions,
+  }))
 
-    // Verificar si hay ejercicios asignados a esta combinación
-    if (exercisesCount > 0) {
-      const { instructions, example } = getPromptForTypeQuestion(typeQuestion)
+  // Distribuir ejercicios entre los grupos
+  const exercisesPerGroup = distributeExercises(quantity, groups.length)
 
-      const userPrompt = `
-        Genera ${exercisesCount > 1 ? 'ejercicios' : 'ejercicio'} en español sobre el tema "${topic}".
-        Nivel de dificultad: "${difficulty}".
-        Tipo de pregunta: "${typeQuestion}".
-        ${instructions}
-        Devuelve únicamente un array JSON de ejercicios de tamaño ${exercisesCount}, siguiendo el siguiente formato:
-        ${example}
-        `.trim()
+  for (let i = 0; i < groups.length; i++) {
+    const { difficulty, typeQuestions } = groups[i]
+    const numExercises = exercisesPerGroup[i]
 
-      // Realizar la llamada a la API de Groq
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [
-          {
-            role: 'system',
-            content:
-              'Eres un asistente que genera ejercicios educativos en español basados en un tema, nivel de dificultad y tipo de pregunta específicos.',
-          },
-          { role: 'user', content: userPrompt },
-        ],
-        model: 'llama3-8b-8192',
-        temperature: 0.7,
-        max_tokens: 1024,
-        top_p: 1,
-        stream: false,
-        response_format: { type: 'json_object' },
-        stop: null,
-      })
+    // Generar ejercicios para este grupo
+    const groupExercises = await generateExercisesForGroup(topic, numExercises, difficulty, typeQuestions)
 
-      // Obtener el contenido de la respuesta
-      const content = chatCompletion.choices[0]?.message?.content?.trim()
-
-      if (!content) {
-        throw new Error('La respuesta de la IA está vacía.')
-      }
-
-      // Parsear el JSON de la respuesta
-      let combinationExercises: ResponseIA
-      try {
-        combinationExercises = JSON.parse(content)
-
-        // Validar que se generó el número exacto de ejercicios
-        if (combinationExercises.exercises.length < exercisesCount) {
-          console.error(
-            `Se esperaban ${exercisesCount} ejercicios para dificultad "${difficulty}" y tipo "${typeQuestion}", pero se recibieron ${combinationExercises.exercises.length}.`,
-          )
-          throw new Error(
-            `La IA no generó la cantidad correcta de ejercicios para dificultad "${difficulty}" y tipo "${typeQuestion}".`,
-          )
-        }
-
-        console.log({ exam: combinationExercises.exercises })
-        response = {
-          exercises:
-            combinationExercises.exercises.length > exercisesCount
-              ? response.exercises.concat(combinationExercises.exercises.slice(0, exercisesCount))
-              : response.exercises.concat(combinationExercises.exercises),
-        }
-      } catch (error) {
-        console.error('Error al parsear el JSON o validar la cantidad:', error)
-        throw new Error('Error al parsear la respuesta de la IA.')
-      }
-    }
+    response = { exercises: response.exercises.concat(groupExercises) }
   }
 
   return response.exercises
+}
+
+async function generateExercisesForGroup(
+  topic: string,
+  quantity: number,
+  difficulty: string,
+  typeQuestions: string[],
+): Promise<Exercise[]> {
+  const { instructions, example } = getPromptInstructionsAndExample(typeQuestions)
+
+  const userPrompt = `
+    Genera ${quantity} ejercicios en español sobre el tema "${topic}".
+    Nivel de dificultad: "${difficulty}".
+    Tipos de pregunta: "${typeQuestions.join('" y "')}".
+    ${instructions}
+    Devuelve únicamente un array JSON de ejercicios, siguiendo el siguiente formato:
+    ${example}
+    `.trim()
+
+  // Realizar la llamada a la API de Groq
+  const chatCompletion = await groq.chat.completions.create({
+    messages: [
+      {
+        role: 'system',
+        content:
+          'Eres un asistente que genera ejercicios educativos en español basados en un tema, nivel de dificultad y tipos de pregunta específicos.',
+      },
+      { role: 'user', content: userPrompt },
+    ],
+    model: 'llama3-8b-8192',
+    temperature: 1,
+    max_tokens: 1024,
+    top_p: 1,
+    stream: false,
+    response_format: { type: 'json_object' },
+    stop: null,
+  })
+
+  // Obtener el contenido de la respuesta
+  const content = chatCompletion.choices[0]?.message?.content?.trim()
+
+  if (!content) {
+    throw new Error('La respuesta de la IA está vacía.')
+  }
+
+  // Parsear el JSON de la respuesta
+  let groupExercises: ResponseIA
+  try {
+    console.log(content)
+    groupExercises = JSON.parse(content)
+
+    // Validar que se generó el número exacto de ejercicios
+    if (groupExercises.exercises.length < quantity) {
+      console.error(
+        `Se esperaban ${quantity} ejercicios para dificultad "${difficulty}", pero se recibieron ${groupExercises.exercises.length}.`,
+      )
+      throw new Error(`La IA no generó la cantidad correcta de ejercicios para dificultad "${difficulty}".`)
+    }
+
+    return groupExercises.exercises.length > quantity
+      ? groupExercises.exercises.slice(0, quantity)
+      : groupExercises.exercises
+  } catch (error) {
+    console.error('Error al parsear el JSON o validar la cantidad:', error)
+    throw new Error('Error al parsear la respuesta de la IA.')
+  }
 }
