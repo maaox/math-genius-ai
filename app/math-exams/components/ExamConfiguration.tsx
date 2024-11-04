@@ -80,22 +80,6 @@ export const ExamConfiguration: React.FC<ExamConfigurationProps> = ({
           <div className="flex space-x-4">
             <div className="flex items-center space-x-2">
               <Checkbox
-                id="eleccion-multiple"
-                checked={selectedTypeQuestion.includes('eleccion multiple')}
-                onCheckedChange={() => handleTypeQuestionChange('eleccion multiple')}
-              />
-              <Label htmlFor="eleccion multiple">Elección múltiple</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="rellenar-espacios"
-                checked={selectedTypeQuestion.includes('rellenar espacios')}
-                onCheckedChange={() => handleTypeQuestionChange('rellenar espacios')}
-              />
-              <Label htmlFor="rellenar espacios">Rellenar espacios</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
                 id="respuesta-corta"
                 checked={selectedTypeQuestion.includes('respuesta corta')}
                 onCheckedChange={() => handleTypeQuestionChange('respuesta corta')}
