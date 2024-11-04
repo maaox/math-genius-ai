@@ -37,7 +37,6 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
     selectedTypeQuestion.length > 0 &&
     selectedDifficulty.length > 0 &&
     selectedTemplate
-  const bulletsOptions = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 
   // useEffect para generar las imágenes cuando cambian los ejercicios o la plantilla
   useEffect(() => {
@@ -119,7 +118,6 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
       const marginBottom = 280 // Margen inferior
       const lineHeight = 28 // Espacioentre las lineas de un texto largo
       const spaceBetweenExercises = 30 // Espacio entre ejercicios
-      const spaceBetweenOptions = 10 // Espacio entre ejercicios
 
       // Posiciones y alturas para la primera página
       const titleFontSize = 40
@@ -131,48 +129,37 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
       const maxContentHeightOtherPages = totalCanvasHeight - startYPage - marginBottom
 
       // Función para medir la altura total de los ejercicios en una página
-      const measureExercisesHeight = (
+      const measureTextsHeight = (
         context: CanvasRenderingContext2D,
-        exercises: Exercise[],
+        texts: string[],
         startIndex: number,
         maxContentHeight: number,
-      ): { exercisesCount: number; totalHeight: number } => {
+      ): { textsCount: number; totalHeight: number } => {
         let totalHeight = 0
-        let exercisesCount = 0
+        let textsCount = 0
 
         for (let i = startIndex; i < exercises.length; i++) {
-          const exerciseIndex = i
-          const exerciseText = `${exerciseIndex + 1}. ${exercises[i].question}`
-          const textHeight = measureTextHeight(context, exerciseText, canvas.width - 280, lineHeight)
-
-          if (exercises[i].options) {
-            const options = exercises[i].options!
-            for (let j = 0; j < options.length; j++) {
-              const optionText = `${bulletsOptions[j]}. ${options[j]}`
-              const optionsHeight = measureTextHeight(context, optionText, canvas.width - 280, lineHeight)
-              totalHeight += optionsHeight + spaceBetweenOptions
-            }
-          }
-
-          const answerText = `Respuesta: ${exercises[i].answer}`
-          const answerHeight = measureTextHeight(context, answerText, canvas.width - 280, lineHeight)
-          totalHeight += answerHeight
+          const text = texts[i]
+          const textHeight = measureTextHeight(context, text, canvas.width - 280, lineHeight)
 
           if (totalHeight + textHeight + spaceBetweenExercises > maxContentHeight) {
             break
           }
 
           totalHeight += textHeight + spaceBetweenExercises
-          exercisesCount++
+          textsCount++
         }
 
-        return { exercisesCount, totalHeight }
+        return { textsCount, totalHeight }
       }
 
       let currentIndex = 0
       let pageNumber = 0
 
-      while (currentIndex < exercises.length) {
+      // Preparar los textos de los ejercicios
+      const exerciseTexts = exercises.map((exercise, index) => `${index + 1}. ${exercise.question}`)
+
+      while (currentIndex < exerciseTexts.length) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         ctx.drawImage(templateImage, 0, 0)
 
@@ -221,34 +208,82 @@ export const PreviewSection: React.FC<PreviewSectionProps> = ({
         ctx.textAlign = 'left'
 
         // Medir cuántos ejercicios caben en la página actual
-        const { exercisesCount } = measureExercisesHeight(ctx, exercises, currentIndex, maxContentHeight)
+        const { textsCount } = measureTextsHeight(ctx, exerciseTexts, currentIndex, maxContentHeight)
 
         // Añadir ejercicios a la página
-        for (let i = currentIndex; i < currentIndex + exercisesCount; i++) {
-          const exerciseIndex = i
-          const exerciseText = `${exerciseIndex + 1}. ${exercises[i].question}`
+        for (let i = currentIndex; i < currentIndex + textsCount; i++) {
+          const exerciseText = exerciseTexts[i]
 
           const textHeight = wrapText(ctx, exerciseText, startX, startY, canvas.width - 280, lineHeight)
-          startY += textHeight + spaceBetweenOptions // Añadir espacio después del ejercicio
-
-          // Añadir opciones si las hay
-          if (exercises[i].options) {
-            const options = exercises[i].options!
-            console.log({ options })
-            for (let j = 0; j < options?.length; j++) {
-              const optionText = `${bulletsOptions[j]}. ${options[j]}`
-              const optionsHeight = wrapText(ctx, optionText, startX + 30, startY, canvas.width - 280, lineHeight)
-              startY += optionsHeight + spaceBetweenOptions // Añadir espacio entre las opciones
-            }
-          }
-
-          // Añadir respuesta
-          const answerText = `Respuesta: ${exercises[i].answer}`
-          const answerHeight = wrapText(ctx, answerText, startX + 30, startY, canvas.width - 280, lineHeight)
-          startY += answerHeight + spaceBetweenExercises // Añadir espacio después del ejercicio
+          startY += textHeight + spaceBetweenExercises // Añadir espacio después del ejercicio
         }
 
-        currentIndex += exercisesCount
+        currentIndex += textsCount
+        pageNumber++
+
+        // Obtener la imagen generada
+        const dataUrl = canvas.toDataURL('image/jpeg')
+        images.push(dataUrl)
+      }
+
+      // Generar páginas adicionales con las respuestas
+      currentIndex = 0
+      pageNumber = 0
+
+      // Preparar los textos de las respuestas
+      const answerTexts = exercises.map((exercise, index) => `${index + 1}. Respuesta: ${exercise.answer}`)
+
+      // Generar páginas con las respuestas
+      while (currentIndex < answerTexts.length) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.drawImage(templateImage, 0, 0)
+
+        // Dibujar el logo centrado en la parte superior
+        const logoWidth = canvas.width * 0.07
+        const logoHeight = (logoImage.height / logoImage.width) * logoWidth
+        const logoX = canvas.width - 220
+        const logoY = startYPage // Margen superior
+        ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight)
+
+        // Dibujar el logo como marca de agua
+        ctx.globalAlpha = 0.05 // 95% de transparencia
+        const watermarkWidth = canvas.width * 0.5 // Ajustar tamaño si es necesario
+        const watermarkHeight = (logoImage.height / logoImage.width) * watermarkWidth
+        const watermarkX = (canvas.width - watermarkWidth) / 2
+        const watermarkY = (canvas.height - watermarkHeight) / 2
+        ctx.drawImage(logoImage, watermarkX, watermarkY, watermarkWidth, watermarkHeight)
+        ctx.globalAlpha = 1.0 // Restablecer opacidad
+
+        let startY = logoHeight + logoY + startYPage
+        let maxContentHeight = maxContentHeightOtherPages
+
+        // En la primera página de respuestas, añadir título
+        if (pageNumber === 0) {
+          ctx.font = `bold ${titleFontSize}px Arial`
+          ctx.fillStyle = '#10528a'
+          ctx.textAlign = 'center'
+          ctx.fillText(`Respuestas`, totalCanvasWidth / 2, startY)
+          startY += titleLineHeight // Espacio después del título
+          maxContentHeight -= titleLineHeight
+        }
+
+        // Configuración del texto para las respuestas
+        ctx.font = '24px Arial'
+        ctx.fillStyle = 'black'
+        ctx.textAlign = 'left'
+
+        // Medir cuántas respuestas caben en la página actual
+        const { textsCount } = measureTextsHeight(ctx, answerTexts, currentIndex, maxContentHeight)
+
+        // Añadir respuestas a la página
+        for (let i = currentIndex; i < currentIndex + textsCount; i++) {
+          const answerText = answerTexts[i]
+
+          const textHeight = wrapText(ctx, answerText, startX, startY, canvas.width - 280, lineHeight)
+          startY += textHeight + spaceBetweenExercises // Añadir espacio entre respuestas
+        }
+
+        currentIndex += textsCount
         pageNumber++
 
         // Obtener la imagen generada
