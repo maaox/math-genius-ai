@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { Exercise, RequestBody } from '@/lib/interfaces'
 
-const groq = new Groq({ apiKey: process.env.API_AI_KEY })
+const groq = new Groq({ apiKey: process.env.API_KEY_AI })
 
 interface ResponseIA {
   exercises: Exercise[]

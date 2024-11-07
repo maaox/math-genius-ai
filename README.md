@@ -118,7 +118,7 @@
    Crea un archivo \`.env.local\` en la raíz del proyecto y configura las variables necesarias.
 
    ```env
-   API_AI_URL=https://api.mathgeniusai.com
+   API_KEY_AI=https://api.mathgeniusai.com
    ```
 
 4. **Ejecutar la Aplicación en Desarrollo**
@@ -183,7 +183,7 @@ MathGeniusAI/
 │   ├── multiplication-sheets/
 │   ├── math-exercises/
 │   ├── math-exams/
-│   ├── exercise-solving-chat/
+│   ├── math-tutor-chat/
 │   ├── educational-texts/
 │   └── motivational-challenges/
 ├── components/
