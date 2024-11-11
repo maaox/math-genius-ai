@@ -19,7 +19,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
         className={cn(
           'max-w-[80%] rounded-2xl p-4 shadow-md transition-all duration-200',
           message.sender === 'user'
-            ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:shadow-lg hover:scale-[1.02]'
+            ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:shadow-lg'
             : 'bg-gradient-to-r from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 text-gray-900 dark:text-white hover:shadow-lg hover:scale-[1.02]',
         )}
       >

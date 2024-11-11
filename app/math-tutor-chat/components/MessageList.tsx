@@ -33,7 +33,6 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
             <span>El tutor está escribiendo...</span>
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
     </ScrollArea>
   )

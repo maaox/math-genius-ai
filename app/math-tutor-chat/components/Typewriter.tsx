@@ -19,7 +19,7 @@ export default function Typewriter({ text }: TypewriterProps) {
       if (index > text.length) {
         clearInterval(interval)
       }
-    }, 20)
+    }, 10)
     return () => clearInterval(interval)
   }, [text])
 

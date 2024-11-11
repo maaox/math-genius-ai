@@ -7,13 +7,41 @@ import Header from './components/Header'
 import InputArea from './components/InputArea'
 import MessageList from './components/MessageList'
 import PendingImages from './components/PendingImages'
-import { Message, PendingImage } from '@/lib/interfaces'
+import { fetchChatResponse } from '@/lib/api'
+import { Message, MesssageAPI, PendingImage } from '@/lib/interfaces'
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [pendingImages, setPendingImages] = useState<PendingImage[]>([])
+
+  const generateChatResponse = async (updatedMessages: Message[]) => {
+    const messagesForAPI = formatMessagesForAPI(updatedMessages)
+    try {
+      const response = await fetchChatResponse(messagesForAPI)
+
+      const aiResponse: Message = {
+        id: Date.now().toString(),
+        content: response,
+        sender: 'ai',
+        timestamp: new Date(),
+      }
+
+      setMessages((prev) => [...prev, aiResponse])
+    } catch (error) {
+      console.error('Error al llamar a la API de chat:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const formatMessagesForAPI = (messages: Message[]): MesssageAPI[] => {
+    return messages.map((msg) => ({
+      role: msg.sender === 'user' ? 'user' : 'assistant',
+      content: msg.content,
+    }))
+  }
 
   const handleSend = async () => {
     if (!input.trim() && pendingImages.length === 0) return
@@ -26,23 +54,14 @@ export default function Home() {
       timestamp: new Date(),
     }
 
-    setMessages((prev) => [...prev, newMessage])
+    const updatedMessages = [...messages, newMessage]
+
+    setMessages(updatedMessages)
     setInput('')
     setPendingImages([])
     setIsLoading(true)
 
-    // Simular llamada a la API
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content:
-          'Claro, aquí está la solución paso a paso:\n\nPara resolver la ecuación cuadrática $ax^2 + bx + c = 0$, utilizamos la fórmula cuadrática:\n\n$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$\n\nReemplazamos los valores de $a$, $b$ y $c$ en la fórmula.',
-        sender: 'ai',
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, aiResponse])
-      setIsLoading(false)
-    }, 1000)
+    await generateChatResponse(updatedMessages)
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,52 +94,36 @@ export default function Home() {
     setInput('')
   }
 
-  const handleSimilarExample = () => {
+  const handleSimilarExample = async () => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content: '¿Podrías mostrarme un ejemplo similar?',
       sender: 'user',
       timestamp: new Date(),
     }
-    setMessages((prev) => [...prev, newMessage])
+
+    const updatedMessages = [...messages, newMessage]
+
+    setMessages(updatedMessages)
     setIsLoading(true)
 
-    // Simular respuesta de la IA
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content:
-          'Claro, aquí tienes un ejemplo similar:\n\nSupongamos que tenemos la ecuación $x^2 - 4x + 4 = 0$. Podemos resolverla completando el cuadrado o usando la fórmula cuadrática.',
-        sender: 'ai',
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, aiResponse])
-      setIsLoading(false)
-    }, 1000)
+    await generateChatResponse(updatedMessages)
   }
 
-  const handleMoreDetails = () => {
+  const handleMoreDetails = async () => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content: '¿Podrías explicar esto con más detalle?',
       sender: 'user',
       timestamp: new Date(),
     }
-    setMessages((prev) => [...prev, newMessage])
+
+    const updatedMessages = [...messages, newMessage]
+
+    setMessages(updatedMessages)
     setIsLoading(true)
 
-    // Simular respuesta de la IA
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content:
-          'Por supuesto. Vamos a profundizar en cada paso:\n\n1. **Identificar los coeficientes**: En la ecuación $ax^2 + bx + c = 0$, identificamos $a$, $b$ y $c$.\n2. **Calcular el discriminante**: Utilizamos $b^2 - 4ac$ para determinar la naturaleza de las raíces.\n3. **Aplicar la fórmula cuadrática**: Sustituimos los valores en $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.',
-        sender: 'ai',
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, aiResponse])
-      setIsLoading(false)
-    }, 1000)
+    await generateChatResponse(updatedMessages)
   }
 
   return (
