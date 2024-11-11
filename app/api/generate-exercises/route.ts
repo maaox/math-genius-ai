@@ -23,21 +23,6 @@ export async function POST(request: NextRequest) {
     }
 
     const exercises = await generateExercises(topic, Number(quantity), difficulty)
-    /* {
-      exercises: [
-        { question: 'Simplifica la expresión algebraica: 2x + 5 + 3x' },
-        { question: 'Resuelve la ecuación: x - 3 = 7' },
-        {
-          question:
-            'Satisfacer la ecuación: 2x + 2 = 10, ¿cuál es el valor de x? Y vamos a comprobar con un texto muy muy grande a ver cómo se comporta',
-        },
-        { question: 'Simplifica la expresión algebraica: 4x^2 - 2x - 3' },
-        { question: 'Resuelve la ecuación: x + 2 = 9' },
-        {
-          question: 'Satisfacer la ecuación: x/2 + 3 = 5, ¿cuál es el valor de x?',
-        },
-      ],
-    } */
 
     return NextResponse.json({ exercises })
   } catch (error) {
