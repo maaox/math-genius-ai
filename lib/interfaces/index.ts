@@ -22,3 +22,8 @@ export interface PendingImage {
   id: string
   url: string
 }
+
+export interface MesssageAPI {
+  role: 'system' | 'assistant' | 'user'
+  content: string
+}
