@@ -54,6 +54,7 @@
     "encoding": "^0.1.13",
     "file-saver": "^2.0.5",
     "groq-sdk": "^0.7.0",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
     "jspdf": "^2.5.2",
     "jszip": "^3.10.1",
@@ -67,10 +68,12 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.53.0",
+    "react-icons": "^5.3.0",
     "react-markdown": "^9.0.1",
     "react-resizable-panels": "^2.1.3",
     "recharts": "^2.12.7",
     "rehype-katex": "^7.0.1",
+    "remark-breaks": "^4.0.0",
     "remark-math": "^6.0.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
@@ -81,6 +84,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.10.0",
     "eslint": "8.49.0",
