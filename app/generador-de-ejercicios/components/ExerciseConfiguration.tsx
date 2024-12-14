@@ -33,13 +33,14 @@ export const ExercisesConfiguration: React.FC<ExercisesConfigurationProps> = ({
   }
 
   return (
-    <Card className="mb-8 bg-white rounded-lg shadow-md h-[350px]">
+    <Card className="h-full">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-blue-600">Configuración de Ejercicios</CardTitle>
+        <CardTitle className="text-primary">Personaliza tus ejercicios</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+
+      <CardContent className="space-y-8">
         <div className="space-y-2">
-          <Label htmlFor="topic">Tema Específico</Label>
+          <Label htmlFor="topic">¿Qué tema quieres practicar hoy?</Label>
           <Input
             id="topic"
             type="text"
@@ -50,7 +51,7 @@ export const ExercisesConfiguration: React.FC<ExercisesConfigurationProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="quantity">Cantidad de Ejercicios</Label>
+          <Label htmlFor="quantity">¿Cuántos ejercicios necesitas? </Label>
           <Input
             id="quantity"
             type="number"
@@ -61,9 +62,9 @@ export const ExercisesConfiguration: React.FC<ExercisesConfigurationProps> = ({
           />
         </div>
 
-        <div className="space-y-2">
-          <Label>Nivel de Dificultad</Label>
-          <div className="flex space-x-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <Label>¿Qué tan difícil lo quieres?</Label>
+          <div className="flex flex-wrap gap-4">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="basico"

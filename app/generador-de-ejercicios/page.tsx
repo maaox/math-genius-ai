@@ -2,21 +2,20 @@
 
 import React, { useState } from 'react'
 
-import { DownloadOptions } from '@/app/math-exercises/components/DownloadOptions'
-import { ExercisesConfiguration } from '@/app/math-exercises/components/ExercisesConfiguration'
-import { PreviewSection } from '@/app/math-exercises/components/PreviewSection'
-import { TemplateGallery } from '@/app/math-exercises/components/TemplateGallery'
+import { DownloadOptions } from '@/app/generador-de-ejercicios/components/DownloadOptions'
+import { ExercisesConfiguration } from '@/app/generador-de-ejercicios/components/ExerciseConfiguration'
+import { PreviewSection } from '@/app/generador-de-ejercicios/components/PreviewSection'
+import { TemplateGallery } from '@/app/generador-de-ejercicios/components/TemplateGallery'
 
 export default function MultiplicatiosSheets() {
   const [enteredTopic, setEnteredTopic] = useState('')
   const [selectedQuantity, setSelectedQuantity] = useState('3')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
-  const [generatedImages, setGeneratedImages] = useState<string[]>([])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">Generador de Ejercicios</h1>
+    <div className="container pt-28 pb-16 md:pt-36 md:pb-24 px-4 mx-auto space-y-8">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-secondary">Generador de Ejercicios</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ExercisesConfiguration
           enteredTopic={enteredTopic}
@@ -33,10 +32,8 @@ export default function MultiplicatiosSheets() {
         selectedQuantity={selectedQuantity}
         selectedDifficulty={selectedDifficulty}
         selectedTemplate={selectedTemplate}
-        generatedImages={generatedImages}
-        onImagesGenerated={setGeneratedImages}
       />
-      <DownloadOptions enteredTopic={enteredTopic} generatedImages={generatedImages} />
+      <DownloadOptions enteredTopic={enteredTopic} selectedTemplate={selectedTemplate} />
     </div>
   )
 }
