@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react'
 
-import { DownloadOptions } from '@/app/math-exams/components/DownloadOptions'
-import { ExamConfiguration } from '@/app/math-exams/components/ExamConfiguration'
-import { PreviewSection } from '@/app/math-exams/components/PreviewSection'
-import { TemplateGallery } from '@/app/math-exams/components/TemplateGallery'
+import { DownloadOptions } from '@/app/generador-de-examenes/components/DownloadOptions'
+import { ExamConfiguration } from '@/app/generador-de-examenes/components/ExamConfiguration'
+import { PreviewSection } from '@/app/generador-de-examenes/components/PreviewSection'
+import { TemplateGallery } from '@/app/generador-de-examenes/components/TemplateGallery'
 
 export default function MultiplicatiosSheets() {
   const [enteredTopic, setEnteredTopic] = useState('')
@@ -13,11 +13,10 @@ export default function MultiplicatiosSheets() {
   const [selectedTypeQuestion, setSelectedTypeQuestion] = useState<string[]>([])
   const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
-  const [generatedImages, setGeneratedImages] = useState<string[]>([])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">Generador de Exámenes</h1>
+    <div className="container pt-28 pb-16 md:pt-36 md:pb-24 px-4 mx-auto space-y-8">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-secondary">Generador de Exámenes</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ExamConfiguration
           enteredTopic={enteredTopic}
@@ -37,10 +36,8 @@ export default function MultiplicatiosSheets() {
         selectedTypeQuestion={selectedTypeQuestion}
         selectedDifficulty={selectedDifficulty}
         selectedTemplate={selectedTemplate}
-        generatedImages={generatedImages}
-        onImagesGenerated={setGeneratedImages}
       />
-      <DownloadOptions enteredTopic={enteredTopic} generatedImages={generatedImages} />
+      <DownloadOptions enteredTopic={enteredTopic} selectedTemplate={selectedTemplate} />
     </div>
   )
 }

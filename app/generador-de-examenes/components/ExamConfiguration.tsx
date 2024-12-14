@@ -47,13 +47,14 @@ export const ExamConfiguration: React.FC<ExamConfigurationProps> = ({
   }
 
   return (
-    <Card className="mb-8 bg-white rounded-lg shadow-md h-[470px]">
+    <Card className="h-full">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-blue-600">Configuración para el Examen</CardTitle>
+        <CardTitle className="text-primary">Personaliza tu examen</CardTitle>
       </CardHeader>
+
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="topic">Tema Específico</Label>
+          <Label htmlFor="topic">¿De qué tema es tu examen?</Label>
           <Input
             id="topic"
             type="text"
@@ -64,7 +65,7 @@ export const ExamConfiguration: React.FC<ExamConfigurationProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="quantity">Cantidad de Preguntas</Label>
+          <Label htmlFor="quantity">¿Cuántas preguntas necesitas?</Label>
           <Input
             id="quantity"
             type="number"
@@ -75,9 +76,9 @@ export const ExamConfiguration: React.FC<ExamConfigurationProps> = ({
           />
         </div>
 
-        <div className="space-y-2">
-          <Label>Tipo de preguntas</Label>
-          <div className="flex space-x-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <Label>¿Cómo quieres que sean las preguntas?</Label>
+          <div className="flex flex-wrap gap-4">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="respuesta-corta"
@@ -97,9 +98,9 @@ export const ExamConfiguration: React.FC<ExamConfigurationProps> = ({
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label>Nivel de Dificultad</Label>
-          <div className="flex space-x-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <Label>¿Qué tan difícil lo quieres?</Label>
+          <div className="flex flex-wrap gap-4">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="basico"
