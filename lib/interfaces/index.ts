@@ -1,5 +1,5 @@
 export interface Exercise {
-  question?: string
+  question: string
   answer?: string
 }
 
