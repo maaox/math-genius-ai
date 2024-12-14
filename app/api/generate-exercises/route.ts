@@ -94,14 +94,17 @@ async function generateExercises(topic: string, quantity: number, difficulties: 
       levelExercises = JSON.parse(content)
 
       // Validar que se generó el número exacto de ejercicios
-      if (levelExercises.exercises.length !== numExercises) {
+      if (levelExercises.exercises.length < numExercises) {
         console.error(
           `Se esperaban ${numExercises} ejercicios de nivel "${level}", pero se recibieron ${levelExercises.exercises.length}.`,
         )
         throw new Error(`La IA no generó la cantidad correcta de ejercicios para el nivel "${level}".`)
       }
 
-      response = { exercises: response.exercises.concat(levelExercises.exercises) }
+      response =
+        levelExercises.exercises.length > numExercises
+          ? { exercises: response.exercises.concat(levelExercises.exercises.slice(0, numExercises)) }
+          : { exercises: response.exercises.concat(levelExercises.exercises) }
     } catch (error) {
       console.error('Error al parsear el JSON:', error)
       throw new Error('Error al parsear la respuesta de la IA.')

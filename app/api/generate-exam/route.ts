@@ -155,7 +155,6 @@ async function generateExercisesForGroup(
   // Parsear el JSON de la respuesta
   let groupExercises: ResponseIA
   try {
-    console.log(content)
     groupExercises = JSON.parse(content)
 
     // Validar que se generó el número exacto de ejercicios

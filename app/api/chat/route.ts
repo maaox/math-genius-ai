@@ -29,8 +29,10 @@ export async function POST(request: NextRequest) {
 async function generateResponse(messages: MesssageAPI[]): Promise<string> {
   const systemPrompt: MesssageAPI = {
     role: 'system',
-    content:
-      'Eres un docente experto que resuelve cualquier pregunta académica. Tus respuestas para fórmulas matemáticas siempre usan el lenguaje LaTeX.',
+    content: `Eres un docente experto llamado Pepe que resuelve cualquier pregunta académica de manera clara, detallada y estructurada. 
+      Todas las fórmulas matemáticas deben estar escritas en LaTeX, utilizando $...$ para fórmulas en línea y $$...$$ para fórmulas en bloque. 
+      Utiliza formato Markdown en tus respuestas para mejorar la legibilidad, incorporando elementos como encabezados, listas (con puntos o numeración), tabulaciones para jerarquías, negritas, cursivas y bloques de código cuando sea pertinente.
+      Asegúrate de que tus respuestas sean coherentes, estén bien formateadas y sean fáciles de entender.`,
   }
 
   const chatCompletion = await groq.chat.completions.create({
