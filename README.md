@@ -22,7 +22,7 @@
 
 ## Descripción General
 
-**MathGeniusAI** es una plataforma educativa impulsada por inteligencia artificial que permite a docentes y padres generar recursos matemáticos personalizados y de alta calidad. La plataforma ofrece herramientas para crear fichas de multiplicación, ejercicios, exámenes, textos educativos y desafíos interactivos, todo diseñado para mejorar el aprendizaje de las matemáticas de una manera atractiva y eficiente.
+**MathGeniusAI** es una plataforma educativa impulsada por inteligencia artificial que permite a docentes y padres generar recursos matemáticos personalizados y de alta calidad. Ofrece herramientas para crear fichas de multiplicación, ejercicios, exámenes, textos educativos y desafíos interactivos, todo diseñado para mejorar el aprendizaje de una manera atractiva y eficiente.
 
 ---
 
@@ -31,28 +31,28 @@
 1. ### **Generador de Fichas de Multiplicación** 📝
 
    - Selección personalizada de tablas de multiplicar del 1 al 12.
-   - Plantillas visuales predefinidas con opciones minimalistas y temáticas para niños.
+   - Plantillas visuales predefinidas con opciones minimalistas e infantiles.
    - Vista previa interactiva en tiempo real.
-   - Opciones de descarga en formatos **WORD**, **PDF** y **JPG**.
+   - Descarga en formatos **WORD**, **PDF** y **JPG**.
 
-2. ### **Generador de Ejercicios de Matemática** ➕➖✖️➗
+2. ### **Generador de Ejercicios** ➕➖✖️➗
 
-   - Amplia selección de temas matemáticos (fracciones, geometría, álgebra, etc.).
+   - Selección de temas personalizados (matemáticas, ciencias, historia, etc.).
    - Personalización de la cantidad de ejercicios y nivel de dificultad.
    - Plantillas visuales adaptadas a diferentes edades.
-   - Descarga en formatos **WORD** y **PDF**.
+   - Descarga en formatos **WORD**, **PDF** y **JPG**.
 
-3. ### **Generador de Exámenes de Matemática** 🧮
+3. ### **Generador de Exámenes** 🧮
 
    - Creación de exámenes personalizados con selección de temas y tipos de preguntas.
-   - Opciones para preguntas abiertas, de opción múltiple o combinadas.
+   - Opciones para preguntas de respuesta corta o problemas.
    - Vista previa completa con respuestas al final.
-   - Descarga en formatos **WORD** y **PDF**.
+   - Descarga en formatos **WORD**, **PDF** y **JPG**.
 
 4. ### **Chat de Resolución de Ejercicios** 💬🤖
 
-   - Interfaz de chat en tiempo real con IA especializada en matemáticas.
-   - Soporte para cargar imágenes de ejercicios escritos a mano o de libros.
+   - Interfaz de chat en tiempo real con IA especializada en temas académicos.
+   - Soporte (aún en progreso) para cargar imágenes de ejercicios escritos a mano o de libros.
    - Respuestas didácticas con soluciones paso a paso.
    - Funciones adicionales como solicitar más detalles o ejemplos similares.
 
@@ -60,7 +60,7 @@
 
    - Generación de cuentos cortos que integran conceptos matemáticos.
    - Plantillas visuales atractivas para diferentes edades.
-   - Descarga en formatos **WORD** y **PDF**.
+   - Descarga en formatos **WORD**, **PDF** y **JPG**.
 
 6. ### **Desafíos y Ejercicios Motivacionales** 🏆
 
@@ -77,8 +77,10 @@
   - [Next.js 13](https://nextjs.org/) con [TypeScript](https://www.typescriptlang.org/)
   - [React](https://reactjs.org/)
 - **Estilos:**
-  - CSS Modules
+  - [Chadcn/ui](https://ui.shadcn.com/)
   - Variables y temas CSS
+- **Exportación de Archivos:**
+  - [docx](https://docx.js.org/), [jsPDF](https://github.com/parallax/jsPDF).
 - **Linter y Formateador:**
   - [ESLint](https://eslint.org/)
   - [Prettier](https://prettier.io/)
@@ -118,7 +120,7 @@
    Crea un archivo \`.env.local\` en la raíz del proyecto y configura las variables necesarias.
 
    ```env
-   API_KEY_AI=https://api.mathgeniusai.com
+   API_KEY_AI=<TU_CLAVE_API>
    ```
 
 4. **Ejecutar la Aplicación en Desarrollo**
@@ -180,12 +182,13 @@ MathGeniusAI/
 ├── app/
 │   ├── layout.jsx
 │   ├── page.jsx
-│   ├── multiplication-sheets/
-│   ├── math-exercises/
-│   ├── math-exams/
-│   ├── math-tutor-chat/
-│   ├── educational-texts/
-│   └── motivational-challenges/
+│   ├── fichas-de-multiplicacion/
+│   ├── generador-de-ejercicios/
+│   ├── generador-de-examenes/
+│   ├── chat-tutor-academico/
+│   ├── textos-educativos/
+│   └── desafios-motivacionales/
+│   └── api/
 ├── components/
 │   ├── common/
 │   └── ui/
@@ -193,13 +196,12 @@ MathGeniusAI/
 │   ├── api/
 │   ├── utils/
 │   └── constants/
+│   └── interfaces/
 ├── hooks/
 ├── styles/
 │   ├── globals.css
 │   ├── variables.css
-│   ├── themes.css
-│   ├── components/
-│   └── pages/
+│   └── themes.css
 ├── public/
 │   ├── images/
 │   ├── fonts/
@@ -219,6 +221,7 @@ MathGeniusAI/
 - **hooks/**: Custom hooks de React.
 - **styles/**: Archivos de estilos globales y específicos.
 - **public/**: Recursos estáticos como imágenes y fuentes.
+- **api/**: Rutas y funciones para llamar a la API de la IA.
 
 ---
 
@@ -248,4 +251,4 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](./LICENS
 
 ---
 
-¡Gracias por usar **MathGeniusAI**! Esperamos que esta herramienta te sea de gran ayuda para enriquecer la experiencia de aprendizaje de las matemáticas. Si tienes alguna sugerencia o encuentras algún problema, no dudes en contactarnos.
+¡Gracias por usar **MathGeniusAI**! Si tienes alguna sugerencia o encuentras algún problema, no dudes en contactarnos.
