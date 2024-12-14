@@ -13,7 +13,7 @@ interface PendingImagesProps {
 
 export default function PendingImages({ pendingImages, removePendingImage }: PendingImagesProps) {
   return (
-    <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-white/80 dark:bg-gray-800/80 border border-purple-100 dark:border-purple-900">
+    <div className="w-full flex flex-wrap gap-2 p-3 rounded-2xl bg-white border border-purple-100">
       {pendingImages.map((img) => (
         <div key={img.id} className="relative group">
           <Image
