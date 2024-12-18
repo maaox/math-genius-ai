@@ -7,8 +7,9 @@ import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import { FaFacebookF, FaTiktok } from 'react-icons/fa'
 import { RiWhatsappFill } from 'react-icons/ri'
 
-import AJSLogo from '@/components/logo'
-import { Button } from '@/components/ui/button' // Componente de shadcn/ui
+// import AJSLogo from '@/components/logo'
+// import { Button } from '@/components/ui/button' // Componente de shadcn/ui
+// import Image from 'next/image'
 
 const MENU_OPTIONS = [
   { text: 'Inicio', path: '/' },
@@ -25,25 +26,25 @@ export const Navbar = () => {
   return (
     <header className="z-50 w-full">
       {/* Círculo de Sombra */}
-      <div className="z-50 absolute top-0 md:top-[-10px] left-1/2 transform -translate-x-1/2 w-24 h-24 md:w-28 md:h-28 rounded-full shadow-lg"></div>
+      {/* <div className="z-50 absolute top-0 md:top-[-10px] left-1/2 transform -translate-x-1/2 w-24 h-24 md:w-28 md:h-28 rounded-full shadow-lg"></div> */}
 
       {/* Menu */}
       <div className="z-50 w-full bg-white fixed top-0 left-0 shadow-lg">
         {/* Logo */}
-        <div className="absolute top-0 md:top-[-10px] left-1/2 transform -translate-x-1/2 w-24 h-24 md:w-28 md:h-28 p-4 md:p-5 bg-white rounded-full">
-          <Link href="/" aria-label="Academia José Sabogal Logo">
-            <AJSLogo />
+        {/* <div className="absolute top-0 md:top-[-10px] left-1/2 transform -translate-x-1/2 w-24 h-24 md:w-28 md:h-28 p-4 md:p-5 bg-white rounded-full">
+          <Link href="/" aria-label="Academia José Sabogal Logo" className="w-20 h-20">
+            <Image src="images/KAI.png" alt="Pepe IA Robot" fill className="object-contain drop-shadow-2xl" priority />
           </Link>
-        </div>
+        </div> */}
 
         <div className="container mx-auto px-4">
           <nav className="flex items-center justify-between h-16 md:h-20">
             {/* Botón de regreso para móviles */}
-            <div className="flex items-center lg:hidden">
+            {/* <div className="flex items-center lg:hidden">
               <Button className="rounded-full text-base" variant="secondary" size="sm" asChild>
-                <Link href="/inicio-sesion">Regresar</Link>
+                <Link href="/">Regresar</Link>
               </Button>
-            </div>
+            </div> */}
 
             {/* Navegación de escritorio */}
             <div className="hidden lg:flex justify-between w-full">
@@ -75,9 +76,9 @@ export const Navbar = () => {
                 ))}
 
                 {/* Botón de regreso */}
-                <Button className="rounded-full text-base" variant="secondary" size="lg" asChild>
-                  <Link href="/inicio-sesion">Regresar</Link>
-                </Button>
+                {/*  <Button className="rounded-full text-base" variant="secondary" size="lg" asChild>
+                  <Link href="/">Regresar</Link>
+                </Button> */}
               </div>
             </div>
 

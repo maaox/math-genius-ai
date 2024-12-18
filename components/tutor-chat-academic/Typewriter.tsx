@@ -7,11 +7,9 @@ import 'katex/dist/katex.min.css'
 
 interface TypewriterProps {
   text: string
-  scrollToBottom: () => void
-  isAtBottom: boolean
 }
 
-const Typewriter: React.FC<TypewriterProps> = ({ text, scrollToBottom, isAtBottom }) => {
+export const Typewriter: React.FC<TypewriterProps> = ({ text }) => {
   const [displayedText, setDisplayedText] = useState('')
 
   useEffect(() => {
@@ -23,9 +21,6 @@ const Typewriter: React.FC<TypewriterProps> = ({ text, scrollToBottom, isAtBotto
       for (const token of tokens) {
         if (isCancelled) break
         setDisplayedText((prev) => prev + token)
-        if (isAtBottom) {
-          scrollToBottom()
-        }
         await delay(20) // Ajusta la velocidad aquí
       }
     }
@@ -66,5 +61,3 @@ function tokenize(text: string): string[] {
 
   return tokens
 }
-
-export default Typewriter

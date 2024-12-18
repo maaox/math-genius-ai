@@ -1,13 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import { DownloadOptions } from '@/app/generador-de-examenes/components/DownloadOptions'
-import { ExamConfiguration } from '@/app/generador-de-examenes/components/ExamConfiguration'
-import { PreviewSection } from '@/app/generador-de-examenes/components/PreviewSection'
-import { TemplateGallery } from '@/app/generador-de-examenes/components/TemplateGallery'
+import { DownloadOptions, ExamConfiguration, PreviewSection, TemplateGallery } from '@/components/exam-generator'
 
-export default function MultiplicatiosSheets() {
+export default function ExamGenerator() {
   const [enteredTopic, setEnteredTopic] = useState('')
   const [selectedQuantity, setSelectedQuantity] = useState('6')
   const [selectedTypeQuestion, setSelectedTypeQuestion] = useState<string[]>([])

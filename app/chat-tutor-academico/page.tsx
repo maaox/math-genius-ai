@@ -2,10 +2,7 @@
 
 import { useState } from 'react'
 
-import ButtonGroup from './components/ButtonGroup'
-import InputArea from './components/InputArea'
-import MessageList from './components/MessageList'
-import PendingImages from './components/PendingImages'
+import { ButtonGroup, InputArea, MessageList, PendingImages } from '@/components/tutor-chat-academic'
 import { fetchChatResponse } from '@/lib/api'
 import { Message, MesssageAPI, PendingImage } from '@/lib/interfaces'
 
@@ -14,7 +11,7 @@ export default function Home() {
     {
       id: Date.now().toString(),
       content:
-        'Hola, soy Pepe IA. ¡Estoy aquí para ayudarte con cualquier tema académico! ¿Tienes dudas? Pregunta sobre matemáticas, ciencia, historia o cualquier asignatura. Escríbeme una pregunta y empecemos a aprender juntos.',
+        'Hola, soy KAI. ¡Estoy aquí para ayudarte con cualquier tema académico! ¿Tienes dudas? Pregunta sobre matemáticas, ciencia, historia o cualquier asignatura. Escríbeme una pregunta y empecemos a aprender juntos.',
       sender: 'ai',
       timestamp: new Date(),
     },
@@ -137,7 +134,7 @@ export default function Home() {
     <div className="flex justify-center pt-28 pb-16 md:pt-36 md:pb-20 px-4 bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-indigo-200 via-slate-100 to-indigo-200">
       <div className="container flex flex-col items-center gap-3 h-[750px] max-w-5xl">
         <h1 className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-          Pepe IA ¡Tutor académico!
+          KAI ¡Tutor académico!
         </h1>
 
         <MessageList messages={messages} isLoading={isLoading} />

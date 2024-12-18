@@ -12,13 +12,7 @@ interface InputAreaProps {
   hasPendingImages: boolean
 }
 
-export default function InputArea({
-  input,
-  setInput,
-  handleSend,
-  handleImageUpload,
-  hasPendingImages,
-}: InputAreaProps) {
+export function InputArea({ input, setInput, handleSend, handleImageUpload, hasPendingImages }: InputAreaProps) {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()

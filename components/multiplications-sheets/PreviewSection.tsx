@@ -12,7 +12,7 @@ interface PreviewSectionProps {
 
 export const PreviewSection: React.FC<PreviewSectionProps> = ({ selectedTables, selectedTemplate }) => {
   const template = getTemplateById(selectedTemplate)
-  const logoUrl = '/images/logo.png'
+  const logoUrl = '/images/KAI.png'
 
   return (
     <Card className="h-full">

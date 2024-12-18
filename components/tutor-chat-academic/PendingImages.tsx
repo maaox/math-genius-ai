@@ -11,7 +11,7 @@ interface PendingImagesProps {
   removePendingImage: (id: string) => void
 }
 
-export default function PendingImages({ pendingImages, removePendingImage }: PendingImagesProps) {
+export function PendingImages({ pendingImages, removePendingImage }: PendingImagesProps) {
   return (
     <div className="w-full flex flex-wrap gap-2 p-3 rounded-2xl bg-white border border-purple-100">
       {pendingImages.map((img) => (

@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import { DownloadOptions } from '@/app/fichas-de-multiplicacion/components/DownloadOptions'
-import { MultiplicationTableSelector } from '@/app/fichas-de-multiplicacion/components/MultiplicationTableSelector'
-import { PreviewSection } from '@/app/fichas-de-multiplicacion/components/PreviewSection'
-import { TemplateGallery } from '@/app/fichas-de-multiplicacion/components/TemplateGallery'
+import {
+  DownloadOptions,
+  MultiplicationTableSelector,
+  PreviewSection,
+  TemplateGallery,
+} from '@/components/multiplications-sheets'
 
 export default function MultiplicationSheets() {
   const [selectedTables, setSelectedTables] = useState<number[]>([])

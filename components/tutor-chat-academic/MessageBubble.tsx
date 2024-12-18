@@ -3,25 +3,24 @@ import ReactMarkdown from 'react-markdown'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 
-import Typewriter from './Typewriter'
-import BotIA from '@/components/bot'
+// import BotIA from '@/components/bot'
+import { Typewriter } from './Typewriter'
 import { Message } from '@/lib/interfaces'
 import { cn } from '@/lib/utils'
 import 'katex/dist/katex.min.css'
 
 interface MessageBubbleProps {
   message: Message
-  scrollToBottom: () => void
-  isAtBottom: boolean
 }
 
-export default function MessageBubble({ message, scrollToBottom, isAtBottom }: MessageBubbleProps) {
+export function MessageBubble({ message }: MessageBubbleProps) {
   return (
     <div className="flex">
       {message.sender === 'ai' && (
         <div className="pt-4">
-          <div className="flex items-center justify-center p-1 rounded-full bg-sky-100">
-            <BotIA className="w-8 h-8 md:w-9 md:h-9" />
+          <div className="flex items-center justify-center rounded-full bg-sky-100">
+            {/* <BotIA className="w-8 h-8 md:w-9 md:h-9" /> */}
+            <Image src={'/images/KAI.png'} alt={`KAI`} width={40} height={40} className="rounded-lg" />
           </div>
         </div>
       )}
@@ -44,7 +43,7 @@ export default function MessageBubble({ message, scrollToBottom, isAtBottom }: M
             </div>
           )}
           {message.sender === 'ai' ? (
-            <Typewriter text={message.content} scrollToBottom={scrollToBottom} isAtBottom={isAtBottom} />
+            <Typewriter text={message.content} />
           ) : (
             <ReactMarkdown
               remarkPlugins={[remarkMath]}

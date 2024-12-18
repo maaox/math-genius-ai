@@ -63,10 +63,10 @@ export default function Home() {
         <div className="md:relative max-w-full mx-auto">
           <div className="flex flex-col items-center gap-12 md:relative md:w-[580px] md:h-[580px] lg:w-[730px] lg:h-[730px] mx-auto">
             <div className="flex flex-col items-center md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center ">
-              <h1 className="text-4xl font-bold text-center mb-4 bg-clip-text text-secondary">Pepe IA</h1>
-              <div className="relative w-52 h-52 md:w-72 md:h-72 lg:w-80 lg:h-80">
+              {/* <h1 className="text-4xl font-bold text-center mb-4 bg-clip-text text-secondary">KAI</h1> */}
+              <div className="relative w-52 h-52 md:w-72 md:h-72 lg:w-60 lg:h-60">
                 <Image
-                  src="images/pepeAI.png"
+                  src="images/KAI.png"
                   alt="Pepe IA Robot"
                   fill
                   className="object-contain drop-shadow-2xl"

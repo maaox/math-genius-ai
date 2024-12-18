@@ -8,7 +8,7 @@ interface ButtonGroupProps {
   onMoreDetails: () => void
 }
 
-export default function ButtonGroup({ onNewQuestion, onSimilarExample, onMoreDetails }: ButtonGroupProps) {
+export function ButtonGroup({ onNewQuestion, onSimilarExample, onMoreDetails }: ButtonGroupProps) {
   return (
     <div className="w-full flex flex-wrap gap-2">
       <Button

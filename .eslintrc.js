@@ -20,10 +20,14 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-unused-vars': ['error'],
     'react/react-in-jsx-scope': 'off', // No es necesario importar React en Next.js 13
+    '@typescript-eslint/no-empty-object-type': 'off',
     'import/order': [
       'error',
       {
-        groups: [['builtin', 'external'], ['internal', 'parent', 'sibling', 'index']],
+        groups: [
+          ['builtin', 'external'],
+          ['internal', 'parent', 'sibling', 'index'],
+        ],
         'newlines-between': 'always',
         alphabetize: { order: 'asc', caseInsensitive: true },
       },
@@ -40,5 +44,4 @@ module.exports = {
       },
     },
   },
-};
-
+}

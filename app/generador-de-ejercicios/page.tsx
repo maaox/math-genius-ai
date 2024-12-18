@@ -1,13 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import { DownloadOptions } from '@/app/generador-de-ejercicios/components/DownloadOptions'
-import { ExercisesConfiguration } from '@/app/generador-de-ejercicios/components/ExerciseConfiguration'
-import { PreviewSection } from '@/app/generador-de-ejercicios/components/PreviewSection'
-import { TemplateGallery } from '@/app/generador-de-ejercicios/components/TemplateGallery'
+import {
+  DownloadOptions,
+  ExercisesConfiguration,
+  PreviewSection,
+  TemplateGallery,
+} from '@/components/exercise-generator'
 
-export default function MultiplicatiosSheets() {
+export default function ExerciseGenerator() {
   const [enteredTopic, setEnteredTopic] = useState('')
   const [selectedQuantity, setSelectedQuantity] = useState('3')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([])
