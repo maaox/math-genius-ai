@@ -16,7 +16,7 @@ const MENU_OPTIONS = [
   { text: 'Fichas', path: '/fichas-de-multiplicacion' },
   { text: 'Ejercicios', path: '/generador-de-ejercicios' },
   { text: 'Examenes', path: '/generador-de-examenes' },
-  { text: 'Chat PepeIA', path: '/chat-tutor-academico' },
+  { text: 'Chat KAI', path: '/chat-tutor-academico' },
 ]
 
 export const Navbar = () => {

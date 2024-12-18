@@ -31,7 +31,7 @@ const features = [
     textColor: 'text-purple-500',
   },
   {
-    title: 'Chat con PepeIA',
+    title: 'Chat con KAI',
     href: '/chat-tutor-academico',
     icon: MessageSquare,
     bgColor: 'bg-green-50',

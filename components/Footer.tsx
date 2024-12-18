@@ -81,7 +81,7 @@ const Footer = () => (
               Examenes
             </Link>
             <Link href="/chat-tutor-academico" className="py-1 font-normal text-gray-300 hover:text-white">
-              Chat PepeIA
+              Chat KAI
             </Link>
           </nav>
         </div>
