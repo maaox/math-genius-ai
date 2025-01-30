@@ -84,10 +84,15 @@ const config: Config = {
             height: '0',
           },
         },
+        float: {
+          '0%': { transform: 'translateY(0) rotate(0deg)', opacity: '1', borderRadius: '0' },
+          '100%': { transform: 'translateY(-1000px) rotate(720deg)', opacity: '0', borderRadius: '50%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        float: 'float 25s linear infinite',
       },
     },
   },

@@ -1,10 +1,9 @@
 import './globals.css'
-import 'primereact/resources/primereact.min.css'
-import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
-// import Footer from '@/components/Footer'
+import { Background } from '@/components/Background'
+import Footer from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import { Toaster } from '@/components/ui/sonner'
 
@@ -23,10 +22,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} grid min-h-[100dvh] grid-rows-[auto_1fr_auto]`}>
+        <Background />
+
         <Navbar />
         <main>{children}</main>
-        {/* <Footer /> */}
+        <Footer />
         <Toaster />
       </body>
     </html>
